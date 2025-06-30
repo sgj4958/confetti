@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>연습장</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .body {
+        border: 1px solid #ddd;
+        margin: 5px;
+        overflow: hidden;
+        width: 90vw;
+        height: 90vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+  </style>
+</head>
+<body>
+
+    <div class="body">
+    </div>
+
+</body>
+<script>
+    const 폭죽 = (elementQuery, message = "Confetti", option = {}) => {
+        option = {
+            색종이수량: 50,
+            색종이최대크기: 7,
+            색종이최소크기: 1,
+            최대거리: 80,
+            최소거리: 30,
+            최대각도: 80,
+            최소각도: -10,
+            x위치: 10,
+            y위치: 70,
+            지속시간: 1.5,
+            ...option
+        }
+
+        const 랜덤 = (...값) => Math.random() * (Math.max(...값) - Math.min(...값)) + Math.min(...값)
+        const parent = document.querySelector(elementQuery)
+        parent.insertAdjacentHTML("beforeend", `
+        <div class="wrap">
+            <button><p>🎉</p><p>${message}</p></button>
+            <svg viewBox="0 0 100 100"></svg>
+        </div>
+        <style>
+        .wrap {
+            position: relative;width: 100px;height: 40px;border: 1px solid #ddd;background: #fff;border-radius: 5px;cursor: pointer;
+            button {
+                width: 100%;height: 100%;border: none;background: none;display: flex;justify-content: center;align-items: center;padding: 0 10px;
+                p {
+                    transform-origin: 0 100%;width: 100%;
+                    &:nth-child(1) {width: 20px;}
+                }
+            }
+            svg {
+                position: absolute;bottom: 0;left: 0;width: 100%;height: 200%;
+            }
+        }
+        </style>
+        `)
+
+        const 펑 = (e) => {
+            const 타겟 = e.currentTarget
+            if(타겟.querySelector("svg").childElementCount) return
+
+            타겟.querySelector("button p:nth-child(1)").style.transform = "skew(5deg, 5deg)"
+            setTimeout(() => 타겟.querySelector("button p:nth-child(1)").style.transform = "none", 100)
+
+            for(let i = 0; i < option.색종이수량; i++) {
+                const 색종이크기 = 랜덤(option.색종이최대크기, option.색종이최소크기)
+                타겟.querySelector("svg").insertAdjacentHTML("beforeend", `<path 
+                class="particle" 
+                d="M ${option.x위치} ${option.y위치} v ${색종이크기} h ${색종이크기} v -${색종이크기} z" 
+                style="
+                fill: hsl(${Math.round(Math.random() * 360)} 98% 82% / 1);
+                transform-origin: ${option.x위치}px ${option.y위치}px;
+                transition: translate ${option.지속시간}s cubic-bezier(0, 0.8, 0.5, 1), opacity ${랜덤(0.7, 0.1)}s cubic-bezier(0.8, 0, 1, 0.5) ${option.지속시간 / 2}s, rotate ${option.지속시간}s ease-out;
+                ">`)
+            }
+
+            타겟.querySelectorAll(".particle").forEach(e => {
+                const 현재거리 = 랜덤(option.최대거리, option.최소거리)
+                const 현재각도 = 360 - 랜덤(option.최대각도, option.최소각도)
+                setTimeout(() => {
+                    e.style.opacity = 0
+                    e.style.translate = `${
+                        현재거리 * Math.cos(Math.PI / 180 * 현재각도)
+                    }px ${
+                        현재거리 * Math.sin(Math.PI / 180 * 현재각도)
+                    }px`
+                    e.style.rotate = "90deg"
+                })
+                e.addEventListener("transitionend", e.remove)
+            })
+        }
+
+        const wrap = parent.querySelector(".wrap")
+        wrap.addEventListener("click", 펑)
+    }
+
+    폭죽(".body")
+</script>
+</html>
