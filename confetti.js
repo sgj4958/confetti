@@ -24,14 +24,15 @@ const 폭죽 = (elementQuery, option) => {
     `)
 
     const 펑 = e => {
-        if(e.currentTarget.querySelector("svg").childElementCount) return
+        const 타겟 = e.currentTarget
+        if(타겟.querySelector("svg").childElementCount) return
 
-        e.currentTarget.querySelector("button p:nth-child(1)").style.transform = "skew(7deg, 7deg)"
-        setTimeout(() => e.currentTarget.querySelector("button p:nth-child(1)").style.transform = "none", 100)
+        타겟.querySelector("button p:nth-child(1)").style.transform = "skew(7deg, 7deg)"
+        setTimeout(() => 타겟.querySelector("button p:nth-child(1)").style.transform = "none", 100)
 
         for(let i = 0; i < option.수량; i++) {
             const 색종이크기 = 랜덤(...option.크기)
-            e.currentTarget.querySelector("svg").insertAdjacentHTML("beforeend", `<path 
+            타겟.querySelector("svg").insertAdjacentHTML("beforeend", `<path 
                 d="M ${option.x위치} ${option.y위치} v ${색종이크기} h ${색종이크기} v -${색종이크기} z" 
                 style="
                     fill: hsl(${Math.round(Math.random() * 360)} 98% 82% / 1);
@@ -41,7 +42,7 @@ const 폭죽 = (elementQuery, option) => {
             ">`)
         }
 
-        e.currentTarget.querySelectorAll("path").forEach(e => {
+        타겟.querySelectorAll("path").forEach(e => {
             const 현재거리 = 랜덤(...option.거리)
             const 현재각도 = 360 - 랜덤(...option.각도)
             setTimeout(() => {
