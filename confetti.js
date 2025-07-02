@@ -5,7 +5,7 @@ const 폭죽 = (elementQuery, option) => {
         크기: [1, 7],
         거리: [30, 80],
         각도: [-10, 80],
-        x위치: 10,
+        x위치: 15,
         y위치: 70,
         지속시간: 1.5,
         ...option
@@ -14,25 +14,24 @@ const 폭죽 = (elementQuery, option) => {
     const 랜덤 = (...값) => Math.random() * (Math.max(...값) - Math.min(...값)) + Math.min(...값)
     const parent = document.querySelector(elementQuery)
     parent.insertAdjacentHTML("beforeend", `
-        <div id="confetti" style="position: relative;min-width: 100px;height: 40px;border: 1px solid #ddd;background: #fff;border-radius: 5px;cursor: pointer;">
-            <button style="height: 100%;border: none;background: none;display: flex;justify-content: center;align-items: center;padding: 0 10px;gap: 10px;">
+        <div id="confetti" style="position: relative;min-width: 100px;height: 40px;border: 1px solid #ddd;background: #fff;border-radius: 5px;">
+            <button style="height: 100%;border: none;background: none;display: flex;justify-content: center;align-items: center;padding: 0 10px;cursor: pointer;gap: 10px;position: relative;z-index: 1;">
                 <p style="transform-origin: 0 100%;">🎉</p>
-                <p>${option.message}</p>
+                <p style="margin-right: 5px;">${option.message}</p>
             </button>
             <svg viewBox="0 0 100 100" style="position: absolute;bottom: 0;left: 0;"></svg>
         </div>
     `)
 
-    const 펑 = e => {
-        const 타겟 = e.currentTarget
-        if(타겟.querySelector("svg").childElementCount) return
+    const 펑 = () => {
+        if(parent.querySelector("svg").childElementCount) return
 
-        타겟.querySelector("button p:nth-child(1)").style.transform = "skew(7deg, 7deg)"
-        setTimeout(() => 타겟.querySelector("button p:nth-child(1)").style.transform = "none", 100)
+        parent.querySelector("button p:first-child").style.transform = "skew(7deg, 7deg)"
+        setTimeout(() => parent.querySelector("button p:first-child").style.transform = "none", 100)
 
         for(let i = 0; i < option.수량; i++) {
             const 색종이크기 = 랜덤(...option.크기)
-            타겟.querySelector("svg").insertAdjacentHTML("beforeend", `<path 
+            parent.querySelector("svg").insertAdjacentHTML("beforeend", `<path 
                 d="M ${option.x위치} ${option.y위치} v ${색종이크기} h ${색종이크기} v -${색종이크기} z" 
                 style="
                     fill: hsl(${Math.round(Math.random() * 360)} 98% 82% / 1);
@@ -42,7 +41,7 @@ const 폭죽 = (elementQuery, option) => {
             ">`)
         }
 
-        타겟.querySelectorAll("path").forEach(e => {
+        parent.querySelectorAll("svg path").forEach(e => {
             const 현재거리 = 랜덤(...option.거리)
             const 현재각도 = 360 - 랜덤(...option.각도)
             setTimeout(() => {
@@ -58,5 +57,5 @@ const 폭죽 = (elementQuery, option) => {
         })
     }
 
-    parent.querySelector("#confetti").addEventListener("click", 펑)
+    parent.querySelector("#confetti button").addEventListener("click", 펑)
 }
